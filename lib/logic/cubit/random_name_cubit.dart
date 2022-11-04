@@ -8,4 +8,10 @@ class RandomNameCubit extends Cubit<RandomNameState> {
 
   void pickRandomName() =>
       emit(RandomNameState(name: names.getRandomElement()));
+
+  @override
+  Future<void> close() {
+    RandomNameCubit().close();
+    return super.close();
+  }
 }

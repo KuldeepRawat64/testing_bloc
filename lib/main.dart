@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:math' as math;
@@ -51,16 +53,20 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: BlocListener<RandomNameCubit, RandomNameState>(
-          bloc: context.watch<RandomNameCubit>(),
-          child: Text('Random Name : $name'),
-          listener: (context, state) {
-            if (state.name.isNotEmpty) {
-              name = state.name;
-            }
-          },
-        ),
-      ),
+          child: BlocConsumer<RandomNameCubit, RandomNameState>(
+        builder: (context, state) {
+          log(state.toString());
+          return Text('Random Name: ${state.name}');
+        },
+        buildWhen: (previous, current) => previous.name != current.name,
+        listener: (context, state) {
+          if (state.name.startsWith('F')) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Congratulations')));
+          }
+        },
+        listenWhen: (previous, current) => previous.name != current.name,
+      )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           context.read<RandomNameCubit>().pickRandomName();
