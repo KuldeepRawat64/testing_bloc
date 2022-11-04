@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:math' as math;
+
+import 'package:testing_bloc_course/logic/cubit/random_name_cubit.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,9 +19,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(),
+      home: BlocProvider(
+        create: (context) => RandomNameCubit(),
+        child: const MyHomePage(),
+      ),
     );
   }
+}
+
+List<String> names = [
+  'Foo',
+  'bar',
+  'Nav',
+];
+
+extension RandomElement<T> on Iterable<T> {
+  T getRandomElement() => elementAt(math.Random().nextInt(length));
 }
 
 class MyHomePage extends StatefulWidget {
@@ -28,17 +45,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String name = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: const Center(
-        child: Text(
-          'Random Name:',
+      body: Center(
+        child: BlocListener<RandomNameCubit, RandomNameState>(
+          bloc: context.watch<RandomNameCubit>(),
+          child: Text('Random Name : $name'),
+          listener: (context, state) {
+            if (state.name.isNotEmpty) {
+              name = state.name;
+            }
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.read<RandomNameCubit>().pickRandomName();
+        },
         tooltip: 'Random Name',
         child: const Icon(Icons.search),
       ),
