@@ -6,6 +6,7 @@ import 'package:testing_bloc_course/logic/bloc/person_bloc.dart';
 import 'dart:math' as math;
 
 import 'package:testing_bloc_course/logic/cubit/random_name_cubit.dart';
+import 'package:testing_bloc_course/resources/repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,22 +48,6 @@ extension Subscript<T> on Iterable<T> {
   T? operator [](int index) => length > index ? elementAt(index) : null;
 }
 
-enum PersonUrl {
-  persons1,
-  persons2,
-}
-
-extension UrlString on PersonUrl {
-  String get urlString {
-    switch (this) {
-      case PersonUrl.persons1:
-        return 'http://127.0.0.1:5500/api/persons1.json';
-      case PersonUrl.persons2:
-        return 'http://127.0.0.1:5500/api/persons2.json';
-    }
-  }
-}
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -71,7 +56,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String name = '';
+  final _repository = Repository();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,16 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 TextButton(
                     onPressed: () {
-                      context
-                          .read<PersonBloc>()
-                          .add(const LoadPersonEvent(url: PersonUrl.persons1));
+                      context.read<PersonBloc>().add(LoadPersonEvent(
+                          url: person1, loader: _repository.getPersons));
                     },
                     child: const Text('Load json #1')),
                 TextButton(
                     onPressed: () {
-                      context
-                          .read<PersonBloc>()
-                          .add(const LoadPersonEvent(url: PersonUrl.persons2));
+                      context.read<PersonBloc>().add(LoadPersonEvent(
+                          url: person2, loader: _repository.getPersons));
                     },
                     child: const Text('Load json #2')),
               ],

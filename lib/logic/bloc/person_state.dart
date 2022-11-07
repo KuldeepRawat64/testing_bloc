@@ -11,4 +11,12 @@ class PersonFetched {
   @override
   String toString() =>
       'PersonFetched(persons: $persons, isRetrievedFromCache: $isRetrievedFromCache)';
+
+  @override
+  bool operator ==(covariant PersonFetched other) =>
+      persons.isEqualToIgnoringOrder(other.persons) &&
+      isRetrievedFromCache == other.isRetrievedFromCache;
+
+  @override
+  int get hashCode => Object.hash(persons, isRetrievedFromCache);
 }

@@ -1,15 +1,18 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:testing_bloc_course/main.dart';
 import 'package:testing_bloc_course/model/person.dart';
-import 'package:testing_bloc_course/resources/repository.dart';
 
 part 'person_event.dart';
 part 'person_state.dart';
 
+extension IsEqualToIgnoringOrder<T> on Iterable<T> {
+  bool isEqualToIgnoringOrder(Iterable<T> other) =>
+      length == other.length &&
+      {...this}.intersection({...other}).length == length;
+}
+
 class PersonBloc extends Bloc<PersonEvent, PersonFetched?> {
-  final _repository = Repository();
-  final Map<PersonUrl, Iterable<Person>> _cache = {};
+  final Map<String, Iterable<Person>> _cache = {};
   PersonBloc() : super(null) {
     on<LoadPersonEvent>((event, emit) async {
       final url = event.url;
@@ -24,7 +27,8 @@ class PersonBloc extends Bloc<PersonEvent, PersonFetched?> {
 
         emit(result);
       } else {
-        final persons = await _repository.getPersons(url.urlString);
+        final loader = event.loader;
+        final persons = await loader(url);
         _cache[url] = persons;
         final result = PersonFetched(
           persons: persons,
