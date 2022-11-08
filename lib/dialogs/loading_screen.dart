@@ -10,7 +10,6 @@ class LoadingScreen {
   static final LoadingScreen _shared = LoadingScreen._sharedInstance();
   factory LoadingScreen.instance() => _shared;
 
-  final StreamController<String> _text = StreamController<String>.broadcast();
   LoadingScreenController? _controller;
 
   void show({required BuildContext context, required String text}) {
@@ -26,9 +25,8 @@ class LoadingScreen {
 
   LoadingScreenController _showOverlay(
       {required BuildContext context, required String text}) {
-    if (!_text.isClosed) {
-      _text.sink.add(text);
-    }
+    final _text = StreamController<String>();
+    _text.add(text);
 
     // get the size
     final state = Overlay.of(context);
