@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:testing_bloc_course/api/login_api.dart';
-import 'package:testing_bloc_course/api/notes_api.dart';
-import 'package:testing_bloc_course/bloc/app_bloc.dart';
-import 'package:testing_bloc_course/dialogs/generic_dialog.dart';
-import 'package:testing_bloc_course/dialogs/loading_screen.dart';
-import 'package:testing_bloc_course/models.dart';
-import 'package:testing_bloc_course/strings.dart';
-import 'package:testing_bloc_course/views/iterable_list_view.dart';
-import 'package:testing_bloc_course/views/login_view.dart';
+import 'api/login_api.dart';
+import 'api/notes_api.dart';
+import 'bloc/app_bloc.dart';
+import 'dialogs/generic_dialog.dart';
+import 'dialogs/loading_screen.dart';
+import 'models.dart';
+import 'strings.dart';
+import 'views/iterable_list_view.dart';
+import 'views/login_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       create: (context) => AppBloc(
         loginApi: LoginApi(),
         notesApi: NotesApi(),
+        acceptedLoginHandle: const LoginHandle.fooBar(),
       ),
       child: Scaffold(
         appBar: AppBar(

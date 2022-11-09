@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:testing_bloc_course/dialogs/loading_screen_controller.dart';
+import 'loading_screen_controller.dart';
 
 class LoadingScreen {
   // singleton pattern : To create only a single instance of the loading screen,
@@ -25,8 +25,8 @@ class LoadingScreen {
 
   LoadingScreenController _showOverlay(
       {required BuildContext context, required String text}) {
-    final _text = StreamController<String>();
-    _text.add(text);
+    final textStream = StreamController<String>();
+    textStream.add(text);
 
     // get the size
     final state = Overlay.of(context);
@@ -59,7 +59,7 @@ class LoadingScreen {
                       const CircularProgressIndicator(),
                       const SizedBox(height: 20.0),
                       StreamBuilder<String>(
-                        stream: _text.stream,
+                        stream: textStream.stream,
                         builder: (context, snapshot) {
                           if (snapshot.hasData) {
                             return Text(
@@ -86,11 +86,11 @@ class LoadingScreen {
 
     state?.insert(overlay);
     return LoadingScreenController(close: () {
-      _text.close();
+      textStream.close();
       overlay.remove();
       return true;
     }, update: (text) {
-      _text.add(text);
+      textStream.add(text);
       return true;
     });
   }
